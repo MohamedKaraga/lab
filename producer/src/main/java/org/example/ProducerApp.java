@@ -15,12 +15,13 @@ import java.util.Random;
 
 
 public class ProducerApp {
+
     public static void main(String[] args) throws InterruptedException {
         final Properties properties = new Properties();
-        final int NUMBER_OF_RECORD = 1000;
+        final int NUMBER_OF_RECORD = 100  ;
         final long PAUSE_MILLIS = 1000L;
         final int MIN = 1;
-        final int MAX = 500;
+        final int MAX = 200;
         final String topicName = "vehicle-count";
 
 
@@ -29,14 +30,13 @@ public class ProducerApp {
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         try (KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(properties)) {
             for (int i = 0; i < NUMBER_OF_RECORD; i++) {
-                String key = "sensor-" + i;
                 Random random = new Random();
-                int value = random.nextInt(MAX - MIN) + MIN;;
-
+                int value = random.nextInt(MAX - MIN) + MIN;
+                String key = "sensor-" + random.nextInt(10);
                 ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topicName, key, String.valueOf(value));
                 System.out.println("Produced message: (" + key + ", " + value + ")");
                 kafkaProducer.send(producerRecord, ProducerApp::callBack);
-                Thread.sleep(PAUSE_MILLIS);
+                Thread.sleep(0);
             }
         }
     }
@@ -45,7 +45,7 @@ public class ProducerApp {
         if (e != null) {
             System.out.println("Error occurs : " + e.getMessage());
         } else {
-            System.out.println("ack : " + recordMetadata.toString());
+            System.out.println("recordMetadata : " + recordMetadata.toString());
         }
     }
 }

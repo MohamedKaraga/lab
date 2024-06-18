@@ -26,7 +26,7 @@ public class StreamApp {
         KStream<String, String> vehicleCountStreams = streamsBuilder.stream("vehicle-count");
         KStream<String, String> congestionAlertsStreams = vehicleCountStreams.filter((key, value) -> {
             int vehicleCount = Integer.parseInt(value);
-           return vehicleCount > CONGESTION_THRESHOLD;
+            return vehicleCount > CONGESTION_THRESHOLD;
         });
         congestionAlertsStreams.foreach((key, value) -> System.out.println("ALERT Street : " + key + ", COUNT vehicle : " + value));
         congestionAlertsStreams.to("congestion-alerts");
